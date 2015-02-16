@@ -12,8 +12,6 @@ var yScale = d3.scale.linear()
 
 oboe('./data/station_data.json')
   .node('stations.*{storage}', function(thing) {
-    // console.log(thing);
-
     thingsdata.push(thing);
 
     var dt = things.data(thingsdata);
