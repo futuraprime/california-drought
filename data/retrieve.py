@@ -45,4 +45,4 @@ for station in stations:
     print 'Completed ' + station['Station Name']
 
 with open(os.path.join(script_path, 'station_data.json'), 'w+') as f:
-    f.write(json.dumps(stations, sort_keys=True))
+    f.write(json.dumps({'stations' : stations}, sort_keys=True))
