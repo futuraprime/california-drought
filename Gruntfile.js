@@ -39,6 +39,9 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     pkg : grunt.file.readJSON('package.json'),
+    bower : {
+      install : {}
+    },
     connect : {
       server : {
         options : {
@@ -100,6 +103,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-stylus');
+  grunt.loadNpmTasks('grunt-bower-task');
 
   registerRobustTasks('default', ['connect', 'watch']);
 };
