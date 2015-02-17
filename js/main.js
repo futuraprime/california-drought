@@ -9,22 +9,30 @@ var thingsdata = [];
 
 // month 0 is going to be January 1916 (for now)
 var startYear = 1916;
-var monthsScale = d3.scale.linear()
-  .domain([0,100 * 12])
-  .range([100,940]);
 var yearsScale = d3.scale.linear()
   .domain([startYear, startYear + 100])
   .range([100,940]);
 var fillScale = d3.scale.linear()
   .domain([0,1])
   .range([0,15]);
+var fillScaleCleaned = function(value) {
+  // console.log('value', value, fillScale(value));
+  if(typeof value != 'number' || isNaN(value)) { return 0; }
+  return fillScale(value);
+}
+// month 0 is going to be January 1990
+var monthStart = 1990;
+var monthsScale = d3.scale.linear()
+  .domain([0,(2015 - monthStart) * 12])
+  .range([200,940]);
 
-function dateNumberToMonth(dateNumber) {
+function dateNumberToMonth(dateNumber, start) {
+  start = start === undefined ? startYear : start;
   var dateString = dateNumber.toString();
   var year = parseInt(dateNumber.substr(0,4), 10);
   var month = parseInt(dateNumber.substr(4,2), 10) - 1;
 
-  return (year - startYear) * 12 + month;
+  return (year - start) * 12 + month;
 }
 
 var mainFsm = new machina.Fsm({
@@ -79,23 +87,25 @@ var mainFsm = new machina.Fsm({
       .text(function(d) { return d['Station Name']; });
 
     newGroups.each(function(d) {
-      console.log(d);
       var group = d3.select(this);
-      var selection = group.selectAll('rect.month-block').data(d.years);
+      var data = _.filter(d.storage, function(i) {
+        return parseInt(i.date.toString().substr(0,4), 10) >= monthStart;
+      });
+      var selection = group.selectAll('rect.month-block').data(data);
       // fix this in python...
       var capacity = parseInt(d['Capacity (AF)'].split(',').join(''), 10);
 
       selection.enter().append('svg:rect')
         .classed('month-block', true)
-        .attr('height', function(y) {
-          return fillScale(y.value/capacity);
+        .attr('height', function(item) {
+          return fillScaleCleaned(item.value/capacity);
         })
-        .attr('y', function(y) {
-          return 15 - fillScale(y.value/capacity);
+        .attr('y', function(item) {
+          return 15 - fillScaleCleaned(item.value/capacity);
         })
-        .attr('width', yearsScale(1) - yearsScale(0))
-        .attr('x', function(y) {
-          return yearsScale(y.year);
+        .attr('width', monthsScale(1) - monthsScale(0))
+        .attr('x', function(item) {
+          return monthsScale(dateNumberToMonth(item.date, monthStart));
         });
     });
 
