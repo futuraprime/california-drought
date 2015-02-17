@@ -31,14 +31,17 @@ for station in stations:
 
     out = StringIO.StringIO(r.text)
     reader = csvkit.reader(out)
-    station_data = {}
+    station_data = []
 
     # first two rows are headers
     reader.next()
     reader.next()
 
     for r in reader:
-        station_data[r[0]] = float(r[2]) if r[2] != 'm' else r[2]
+        station_data.append({
+            'date' : r[0],
+            'value' : float(r[2]) if r[2] != 'm' else r[2]
+        })
 
     station['storage'] = station_data
 
