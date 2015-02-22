@@ -20,7 +20,8 @@ var fillScaleCleaned = function(value) {
   if(typeof value != 'number' || isNaN(value)) { return 0; }
   return fillScale(value);
 };
-var fillColorScale = chroma.scale([ '#B13631', '#2368A0' ])
+var fillColorScale = chroma.scale([ '#B13631', '#F18788', '#75AEDC', '#2368A0' ], [0,0.499,0.5,1])
+  .mode('lch')
   .domain([0,1]);
 var fillColorScaleCleaned = function(value) {
   if(typeof value != 'number' || isNaN(value)) { return '#B7B4B4'; }
@@ -103,12 +104,13 @@ var mainFsm = new machina.Fsm({
 
       selection.enter().append('svg:rect')
         .classed('month-block', true)
-        .attr('height', function(item) {
-          return fillScaleCleaned(item.value/capacity);
-        })
-        .attr('y', function(item) {
-          return 15 - fillScaleCleaned(item.value/capacity);
-        })
+        .attr('height', 15)
+        // .attr('height', function(item) {
+        //   return fillScaleCleaned(item.value/capacity);
+        // })
+        // .attr('y', function(item) {
+        //   return 15 - fillScaleCleaned(item.value/capacity);
+        // })
         .attr('width', monthsScale(1) - monthsScale(0))
         .attr('x', function(item) {
           return monthsScale(dateNumberToMonth(item.date, monthStart));
