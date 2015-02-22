@@ -19,7 +19,13 @@ var fillScaleCleaned = function(value) {
   // console.log('value', value, fillScale(value));
   if(typeof value != 'number' || isNaN(value)) { return 0; }
   return fillScale(value);
-}
+};
+var fillColorScale = chroma.scale([ '#B13631', '#2368A0' ])
+  .domain([0,1]);
+var fillColorScaleCleaned = function(value) {
+  if(typeof value != 'number' || isNaN(value)) { return '#B7B4B4'; }
+  return fillColorScale(value);
+};
 // month 0 is going to be January 1990
 var monthStart = 1990;
 var monthsScale = d3.scale.linear()
@@ -106,7 +112,8 @@ var mainFsm = new machina.Fsm({
         .attr('width', monthsScale(1) - monthsScale(0))
         .attr('x', function(item) {
           return monthsScale(dateNumberToMonth(item.date, monthStart));
-        });
+        })
+        .attr('fill', function(item) { return fillColorScaleCleaned(item.value/capacity); });
     });
 
     this.binding
